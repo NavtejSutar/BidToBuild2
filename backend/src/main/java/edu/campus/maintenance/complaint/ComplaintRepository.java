@@ -50,4 +50,17 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long>, Jpa
 
     @Query("SELECT COUNT(c) FROM Complaint c WHERE c.status = 'REPORTED'")
     long countUnassignedComplaints();
+
+    long countByStatus(ComplaintStatus status);
+
+    long countByPriorityLevel(PriorityLevel priorityLevel);
+
+    long countByCategory(Category category);
+
+    long countByUrgency(Urgency urgency);
+
+    long countByStatusAndPriorityLevel(ComplaintStatus status, PriorityLevel priorityLevel);
+
+    @Query(value = "SELECT AVG(TIMESTAMPDIFF(SECOND, created_at, resolved_at)) FROM complaints WHERE status = 'RESOLVED' AND resolved_at IS NOT NULL", nativeQuery = true)
+    Double findAverageResolutionTimeSeconds();
 }
