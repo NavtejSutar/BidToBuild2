@@ -134,7 +134,7 @@ public class ComplaintService {
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new UnauthorizedException("User not authenticated"));
 
-        if (currentUser.getRole() == Role.USER && !complaint.getReporter().getId().equals(currentUser.getId())) {
+        if (currentUser.getRole() != Role.ADMIN && currentUser.getRole() != Role.TECHNICIAN && !complaint.getReporter().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You are not authorized to view this complaint.");
         }
 
@@ -250,7 +250,7 @@ public class ComplaintService {
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new UnauthorizedException("User not authenticated"));
 
-        if (currentUser.getRole() == Role.USER && !complaint.getReporter().getId().equals(currentUser.getId())) {
+        if (currentUser.getRole() != Role.ADMIN && currentUser.getRole() != Role.TECHNICIAN && !complaint.getReporter().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You are not authorized to view this complaint's history.");
         }
 

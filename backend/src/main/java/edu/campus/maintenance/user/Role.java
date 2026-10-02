@@ -2,6 +2,8 @@ package edu.campus.maintenance.user;
 
 public enum Role {
     USER,
+    STUDENT,
+    STAFF,
     TECHNICIAN,
     ADMIN;
 
