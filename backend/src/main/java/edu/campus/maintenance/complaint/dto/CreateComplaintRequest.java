@@ -1,0 +1,19 @@
+package edu.campus.maintenance.complaint.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+public class CreateComplaintRequest {
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title cannot exceed 255 characters")
+    private String title;
+
+    @NotBlank(message = "Description is required")
+    private String description;
+
+    @NotNull(message = "Location ID is required")
+    private Long locationId;
+}
