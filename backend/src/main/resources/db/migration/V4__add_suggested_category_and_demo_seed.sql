@@ -1,7 +1,7 @@
 -- V4__add_suggested_category_and_demo_seed.sql: Suggested category column and recurrence demo seed
 
 -- 1. Add suggested_category column
-ALTER TABLE complaints ADD COLUMN IF NOT EXISTS suggested_category VARCHAR(50);
+ALTER TABLE complaints ADD COLUMN suggested_category VARCHAR(50);
 
 -- 2. Seed past complaints for recurrence demonstration
 -- Location ID 2 is "Science Block A - Room 204 (Computer Lab)"
