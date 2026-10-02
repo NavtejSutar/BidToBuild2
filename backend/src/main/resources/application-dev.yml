@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/bidtobid?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&createDatabaseIfNotExist=true}
+    username: ${SPRING_DATASOURCE_USERNAME:nav}
+    password: ${SPRING_DATASOURCE_PASSWORD:navdiv123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: false
+
+logging:
+  level:
+    root: INFO
+    edu.campus.maintenance: DEBUG
+    org.springframework.security: INFO
+    org.flywaydb: INFO
