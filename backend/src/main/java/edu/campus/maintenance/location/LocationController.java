@@ -23,6 +23,13 @@ public class LocationController {
 
     private final LocationService locationService;
 
+    @GetMapping("/summary")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @Operation(summary = "Get location-wise summary with complaint counts, category breakdown and recurring flags")
+    public ResponseEntity<ApiResponse<List<edu.campus.maintenance.location.dto.LocationSummaryDto>>> getLocationSummaries() {
+        return ResponseEntity.ok(ApiResponse.ok(locationService.getLocationSummaries()));
+    }
+
     @GetMapping
     @Operation(summary = "Get all campus locations")
     public ResponseEntity<ApiResponse<List<LocationDto>>> getAllLocations() {

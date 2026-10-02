@@ -1,5 +1,6 @@
 package edu.campus.maintenance.complaint.dto;
 
+import edu.campus.maintenance.complaint.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,4 +17,7 @@ public class CreateComplaintRequest {
 
     @NotNull(message = "Location ID is required")
     private Long locationId;
+
+    @NotNull(message = "Category is required")
+    private Category category;
 }

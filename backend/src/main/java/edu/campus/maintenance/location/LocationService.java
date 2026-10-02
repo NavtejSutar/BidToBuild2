@@ -16,6 +16,44 @@ import java.util.List;
 public class LocationService {
 
     private final LocationRepository locationRepository;
+    private final edu.campus.maintenance.complaint.ComplaintRepository complaintRepository;
+    private final edu.campus.maintenance.recurrence.RecurrenceIndexRepository recurrenceIndexRepository;
+
+    @Transactional(readOnly = true)
+    public List<edu.campus.maintenance.location.dto.LocationSummaryDto> getLocationSummaries() {
+        List<Location> locations = locationRepository.findAllByOrderByBuildingAscFloorAscRoomAsc();
+        List<edu.campus.maintenance.location.dto.LocationSummaryDto> summaries = new java.util.ArrayList<>();
+
+        for (Location loc : locations) {
+            long total = 0;
+            long open = 0;
+            long recurring = 0;
+            boolean hasActiveRecurring = false;
+            java.util.Map<String, Long> catCounts = new java.util.HashMap<>();
+
+            for (edu.campus.maintenance.complaint.Category cat : edu.campus.maintenance.complaint.Category.values()) {
+                int c30d = complaintRepository.countRecurringComplaints(loc.getId(), cat, -1L, java.time.Instant.now().minus(30, java.time.temporal.ChronoUnit.DAYS));
+                if (c30d > 0) {
+                    catCounts.put(cat.name(), (long) c30d);
+                    total += c30d;
+                    if (c30d >= 2) {
+                        hasActiveRecurring = true;
+                        recurring += c30d;
+                    }
+                }
+            }
+
+            summaries.add(edu.campus.maintenance.location.dto.LocationSummaryDto.builder()
+                    .location(LocationDto.from(loc))
+                    .totalComplaints(total)
+                    .openComplaints(open)
+                    .recurringComplaints(recurring)
+                    .hasActiveRecurring(hasActiveRecurring)
+                    .complaintsByCategory(catCounts)
+                    .build());
+        }
+        return summaries;
+    }
 
     @Transactional(readOnly = true)
     public List<LocationDto> getAllLocations() {

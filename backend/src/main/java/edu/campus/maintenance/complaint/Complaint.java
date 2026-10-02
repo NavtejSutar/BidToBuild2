@@ -44,6 +44,10 @@ public class Complaint {
     private Category category;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "suggested_category", length = 50)
+    private Category suggestedCategory;
+
+    @Enumerated(EnumType.STRING)
     @Column(length = 50)
     private Urgency urgency;
 

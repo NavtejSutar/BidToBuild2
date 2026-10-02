@@ -66,6 +66,15 @@ public class ComplaintController {
         return ResponseEntity.ok(ApiResponse.ok(complaintService.getComplaintById(id, userDetails.getUsername())));
     }
 
+    @GetMapping("/{id}/recurrence-history")
+    @PreAuthorize("hasAnyRole('USER', 'TECHNICIAN', 'ADMIN')")
+    @Operation(summary = "Get recurrence history of earlier complaints in same location and category")
+    public ResponseEntity<ApiResponse<List<ComplaintDto>>> getRecurrenceHistory(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(ApiResponse.ok(complaintService.getRecurrenceHistory(id, userDetails.getUsername())));
+    }
+
     @GetMapping("/{id}/history")
     @PreAuthorize("hasAnyRole('USER', 'TECHNICIAN', 'ADMIN')")
     @Operation(summary = "Get audit history for a complaint")

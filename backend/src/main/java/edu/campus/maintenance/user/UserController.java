@@ -25,6 +25,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final edu.campus.maintenance.assignment.AssignmentRepository assignmentRepository;
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
@@ -56,6 +57,13 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(ApiResponse.ok("User updated successfully", userService.updateUser(id, request)));
+    }
+
+    @GetMapping("/technicians/workload")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @Operation(summary = "Get worker workload view: open complaints by status and priority")
+    public ResponseEntity<ApiResponse<List<edu.campus.maintenance.user.dto.TechnicianWorkloadDto>>> getTechnicianWorkload() {
+        return ResponseEntity.ok(ApiResponse.ok(userService.getTechniciansWorkload()));
     }
 
     @GetMapping("/technicians")

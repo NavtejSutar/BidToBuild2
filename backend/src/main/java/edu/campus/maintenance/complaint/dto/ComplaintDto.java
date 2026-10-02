@@ -23,6 +23,7 @@ public class ComplaintDto {
     private String description;
     private String imagePath;
     private Category category;
+    private Category suggestedCategory;
     private Urgency urgency;
     private String tagsJson;
     private ClassificationStatus classificationStatus;
@@ -49,6 +50,7 @@ public class ComplaintDto {
                 .description(c.getDescription())
                 .imagePath(c.getImagePath())
                 .category(c.getCategory())
+                .suggestedCategory(c.getSuggestedCategory())
                 .urgency(c.getUrgency())
                 .tagsJson(c.getTagsJson())
                 .classificationStatus(c.getClassificationStatus())

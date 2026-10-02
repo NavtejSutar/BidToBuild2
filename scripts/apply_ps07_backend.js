@@ -1,4 +1,76 @@
-package edu.campus.maintenance.classification;
+const fs = require('fs');
+const path = require('path');
+
+function getPath(rel) {
+    return path.join(__dirname, '..', 'backend', 'src', 'main', 'java', 'edu', 'campus', 'maintenance', rel);
+}
+
+// 1. Complaint.java -> add suggestedCategory field
+const complaintPath = getPath('complaint/Complaint.java');
+let complaintContent = fs.readFileSync(complaintPath, 'utf8');
+if (!complaintContent.includes('suggestedCategory')) {
+    complaintContent = complaintContent.replace(
+        '@Enumerated(EnumType.STRING)\n    @Column(length = 50)\n    private Category category;',
+        `@Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private Category category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "suggested_category", length = 50)
+    private Category suggestedCategory;`
+    );
+    fs.writeFileSync(complaintPath, complaintContent, 'utf8');
+    console.log('Updated Complaint.java with suggestedCategory');
+}
+
+// 2. ComplaintDto.java -> add suggestedCategory field
+const dtoPath = getPath('complaint/dto/ComplaintDto.java');
+let dtoContent = fs.readFileSync(dtoPath, 'utf8');
+if (!dtoContent.includes('suggestedCategory')) {
+    dtoContent = dtoContent.replace(
+        'private Category category;',
+        'private Category category;\n    private Category suggestedCategory;'
+    );
+    dtoContent = dtoContent.replace(
+        '.category(c.getCategory())',
+        '.category(c.getCategory())\n                .suggestedCategory(c.getSuggestedCategory())'
+    );
+    fs.writeFileSync(dtoPath, dtoContent, 'utf8');
+    console.log('Updated ComplaintDto.java with suggestedCategory');
+}
+
+// 3. CreateComplaintRequest.java -> add mandatory category
+const reqPath = getPath('complaint/dto/CreateComplaintRequest.java');
+let reqContent = `package edu.campus.maintenance.complaint.dto;
+
+import edu.campus.maintenance.complaint.Category;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+public class CreateComplaintRequest {
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title cannot exceed 255 characters")
+    private String title;
+
+    @NotBlank(message = "Description is required")
+    private String description;
+
+    @NotNull(message = "Location ID is required")
+    private Long locationId;
+
+    @NotNull(message = "Category is required")
+    private Category category;
+}
+`;
+fs.writeFileSync(reqPath, reqContent, 'utf8');
+console.log('Updated CreateComplaintRequest.java with mandatory category');
+
+// 4. FallbackClassifier.java -> add synchronous checkImmediateUrgency loading from critical-keywords.txt
+const fbPath = getPath('classification/FallbackClassifier.java');
+let fbContent = `package edu.campus.maintenance.classification;
 
 import edu.campus.maintenance.classification.dto.ClassificationResult;
 import edu.campus.maintenance.complaint.Category;
@@ -28,7 +100,7 @@ public class FallbackClassifier {
             ClassPathResource resource = new ClassPathResource("critical-keywords.txt");
             if (resource.exists()) {
                 String text = StreamUtils.copyToString(resource.getInputStream(), StandardCharsets.UTF_8);
-                Arrays.stream(text.split("\r?\n"))
+                Arrays.stream(text.split("\\r?\\n"))
                         .map(String::trim)
                         .filter(s -> !s.isEmpty() && !s.startsWith("#"))
                         .forEach(s -> criticalKeywords.add(s.toLowerCase(Locale.ROOT)));
@@ -138,3 +210,24 @@ public class FallbackClassifier {
         return false;
     }
 }
+`;
+fs.writeFileSync(fbPath, fbContent, 'utf8');
+console.log('Updated FallbackClassifier.java with synchronous critical keyword detection');
+
+// 5. ClassificationService.java -> preserve CRITICAL urgency, set suggestedCategory
+const clsPath = getPath('classification/ClassificationService.java');
+let clsContent = fs.readFileSync(clsPath, 'utf8');
+clsContent = clsContent.replace(
+    'complaint.setCategory(result.getCategory());\n        complaint.setUrgency(result.getUrgency());',
+    `// PS-07 rule: Groq may suggest a different category, stored as suggested_category. User's category remains authoritative.
+        complaint.setSuggestedCategory(result.getCategory());
+
+        // PS-07 rule: Groq must NEVER lower a keyword-triggered CRITICAL urgency
+        if (complaint.getUrgency() != Urgency.CRITICAL) {
+            complaint.setUrgency(result.getUrgency());
+        }`
+);
+fs.writeFileSync(clsPath, clsContent, 'utf8');
+console.log('Updated ClassificationService.java with PS-07 suggestedCategory and critical preservation rule');
+
+console.log('PS-07 backend adjustments applied successfully.');

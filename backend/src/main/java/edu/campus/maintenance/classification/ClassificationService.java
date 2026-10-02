@@ -60,8 +60,13 @@ public class ClassificationService {
         }
 
         // Apply classification results
-        complaint.setCategory(result.getCategory());
-        complaint.setUrgency(result.getUrgency());
+        // PS-07 rule: Groq may suggest a different category, stored as suggested_category. User's category remains authoritative.
+        complaint.setSuggestedCategory(result.getCategory());
+
+        // PS-07 rule: Groq must NEVER lower a keyword-triggered CRITICAL urgency
+        if (complaint.getUrgency() != Urgency.CRITICAL) {
+            complaint.setUrgency(result.getUrgency());
+        }
         complaint.setClassificationSource(source);
         complaint.setClassificationStatus(ClassificationStatus.COMPLETED);
 

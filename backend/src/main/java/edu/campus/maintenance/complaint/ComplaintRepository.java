@@ -33,6 +33,13 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long>, Jpa
             @Param("excludeId") Long excludeId,
             @Param("since") Instant since);
 
+    @Query("SELECT c FROM Complaint c WHERE c.location.id = :locationId AND c.category = :category AND c.id != :excludeId AND c.createdAt >= :since ORDER BY c.createdAt DESC")
+    List<Complaint> findEarlierComplaints(
+            @Param("locationId") Long locationId,
+            @Param("category") Category category,
+            @Param("excludeId") Long excludeId,
+            @Param("since") Instant since);
+
     List<Complaint> findByClassificationStatusIn(List<ClassificationStatus> statuses);
 
     @Query("SELECT COUNT(c) FROM Complaint c WHERE c.status != 'RESOLVED'")

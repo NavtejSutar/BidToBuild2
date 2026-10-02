@@ -21,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final edu.campus.maintenance.assignment.AssignmentRepository assignmentRepository;
 
     @Transactional(readOnly = true)
     public PageResponse<UserDto> getAllUsers(Pageable pageable) {
@@ -33,6 +34,48 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return UserDto.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<edu.campus.maintenance.user.dto.TechnicianWorkloadDto> getTechniciansWorkload() {
+        List<User> technicians = userRepository.findByRoleAndActiveTrue(Role.TECHNICIAN);
+        List<edu.campus.maintenance.user.dto.TechnicianWorkloadDto> workloadList = new java.util.ArrayList<>();
+
+        for (User tech : technicians) {
+            List<edu.campus.maintenance.assignment.Assignment> assignments =
+                    assignmentRepository.findByTechnicianAndActiveTrueOrderByAssignedAtDesc(tech);
+
+            long assignedCount = 0;
+            long inProgressCount = 0;
+            java.util.Map<String, Long> priorityDist = new java.util.HashMap<>();
+            priorityDist.put("CRITICAL", 0L);
+            priorityDist.put("HIGH", 0L);
+            priorityDist.put("MEDIUM", 0L);
+            priorityDist.put("LOW", 0L);
+
+            List<edu.campus.maintenance.complaint.dto.ComplaintDto> activeComplaints = new java.util.ArrayList<>();
+
+            for (edu.campus.maintenance.assignment.Assignment a : assignments) {
+                edu.campus.maintenance.complaint.Complaint c = a.getComplaint();
+                if (c.getStatus() == edu.campus.maintenance.complaint.ComplaintStatus.ASSIGNED) assignedCount++;
+                if (c.getStatus() == edu.campus.maintenance.complaint.ComplaintStatus.IN_PROGRESS) inProgressCount++;
+
+                String pLevel = c.getPriorityLevel() != null ? c.getPriorityLevel().name() : "LOW";
+                priorityDist.put(pLevel, priorityDist.getOrDefault(pLevel, 0L) + 1);
+
+                activeComplaints.add(edu.campus.maintenance.complaint.dto.ComplaintDto.from(c));
+            }
+
+            workloadList.add(edu.campus.maintenance.user.dto.TechnicianWorkloadDto.builder()
+                    .technician(UserDto.from(tech))
+                    .totalActiveTasks(assignments.size())
+                    .assignedCount(assignedCount)
+                    .inProgressCount(inProgressCount)
+                    .priorityDistribution(priorityDist)
+                    .activeComplaints(activeComplaints)
+                    .build());
+        }
+        return workloadList;
     }
 
     @Transactional(readOnly = true)
