@@ -35,6 +35,7 @@ public class ComplaintDto {
     private boolean isRecurring;
     private int recurrenceIndex;
     private int escalationLevel;
+    private int reportCount;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant resolvedAt;
@@ -62,6 +63,7 @@ public class ComplaintDto {
                 .isRecurring(c.isRecurring())
                 .recurrenceIndex(c.getRecurrenceIndex())
                 .escalationLevel(c.getEscalationLevel())
+                .reportCount(c.getReportCount() > 0 ? c.getReportCount() : 1)
                 .createdAt(c.getCreatedAt())
                 .updatedAt(c.getUpdatedAt())
                 .resolvedAt(c.getResolvedAt())

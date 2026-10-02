@@ -26,6 +26,16 @@ public class PriorityScoringService {
             Instant createdAt,
             int recurrenceIndex,
             Instant now) {
+        return calculateScore(urgency, status, createdAt, recurrenceIndex, 1, now);
+    }
+
+    public PriorityCalculationResult calculateScore(
+            Urgency urgency,
+            ComplaintStatus status,
+            Instant createdAt,
+            int recurrenceIndex,
+            int reportCount,
+            Instant now) {
 
         int urgencyBase = getUrgencyBase(urgency);
 
@@ -43,7 +53,10 @@ public class PriorityScoringService {
                 Math.max(0, recurrenceIndex * properties.getRecurrenceMultiplier())
         );
 
-        int totalScore = Math.min(100, urgencyBase + agingBonus + recurrenceBonus);
+        // Multiple reporter bonus: +5 per additional student report, up to +15
+        int reportBonus = Math.min(15, Math.max(0, (reportCount - 1) * 5));
+
+        int totalScore = Math.min(100, urgencyBase + agingBonus + recurrenceBonus + reportBonus);
         PriorityLevel level = determineLevel(totalScore);
 
         return PriorityCalculationResult.builder()
@@ -52,17 +65,20 @@ public class PriorityScoringService {
                 .urgencyBase(urgencyBase)
                 .agingBonus(agingBonus)
                 .recurrenceBonus(recurrenceBonus)
+                .reportBonus(reportBonus)
                 .hoursOpen(hoursOpen)
                 .recurrenceIndex(recurrenceIndex)
                 .build();
     }
 
     public void recalculateAndApply(Complaint complaint, Instant now) {
+        int reportCount = complaint.getReportCount() > 0 ? complaint.getReportCount() : 1;
         PriorityCalculationResult result = calculateScore(
                 complaint.getUrgency(),
                 complaint.getStatus(),
                 complaint.getCreatedAt(),
                 complaint.getRecurrenceIndex(),
+                reportCount,
                 now
         );
 

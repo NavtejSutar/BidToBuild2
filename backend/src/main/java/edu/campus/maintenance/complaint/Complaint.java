@@ -92,6 +92,10 @@ public class Complaint {
     @Builder.Default
     private int escalationLevel = 0;
 
+    @Column(name = "report_count", nullable = false)
+    @Builder.Default
+    private int reportCount = 1;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
