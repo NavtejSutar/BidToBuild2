@@ -23,8 +23,17 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
-    const { token, id, fullName, role, department } = response.data;
-    const userData = { id, email, fullName, role, department, token };
+    const authData = response.data;
+    const token = authData.accessToken || authData.token;
+    const userObj = authData.user || authData;
+    const userData = {
+      id: userObj.id,
+      email: userObj.email,
+      fullName: userObj.name || userObj.fullName,
+      role: userObj.role,
+      department: userObj.department,
+      token,
+    };
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
@@ -32,9 +41,25 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (registerData) => {
-    const response = await api.post('/auth/register', registerData);
-    const { token, id, fullName, role, department } = response.data;
-    const userData = { id, email: registerData.email, fullName, role, department, token };
+    const payload = {
+      name: registerData.name || registerData.fullName,
+      email: registerData.email,
+      password: registerData.password,
+      role: registerData.role,
+      department: registerData.department,
+    };
+    const response = await api.post('/auth/register', payload);
+    const authData = response.data;
+    const token = authData.accessToken || authData.token;
+    const userObj = authData.user || authData;
+    const userData = {
+      id: userObj.id,
+      email: userObj.email,
+      fullName: userObj.name || userObj.fullName,
+      role: userObj.role,
+      department: userObj.department,
+      token,
+    };
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);

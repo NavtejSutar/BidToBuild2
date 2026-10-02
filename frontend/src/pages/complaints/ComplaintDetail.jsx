@@ -192,7 +192,7 @@ export const ComplaintDetail = () => {
               <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Attached Photo</h3>
               <div className="max-w-md rounded-md overflow-hidden border border-slate-700 bg-slate-800">
                 <img
-                  src={`http://localhost:8080/${complaint.imagePath.replace(/^\/+/, '')}`}
+                  src={`/${complaint.imagePath.replace(/^\/+/, '')}`}
                   alt="Fault photo"
                   className="w-full h-auto object-cover max-h-80"
                 />

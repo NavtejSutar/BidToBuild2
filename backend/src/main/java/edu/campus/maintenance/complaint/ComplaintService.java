@@ -127,6 +127,15 @@ public class ComplaintService {
     }
 
     @Transactional(readOnly = true)
+    public PageResponse<ComplaintDto> getAssignedComplaintsForTechnician(String techEmail, Pageable pageable) {
+        User tech = userRepository.findByEmail(techEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Technician not found"));
+
+        Page<Complaint> page = complaintRepository.findAssignedToTechnician(tech, pageable);
+        return PageResponse.from(page.map(c -> enrichWithAssignment(ComplaintDto.from(c), c)));
+    }
+
+    @Transactional(readOnly = true)
     public ComplaintDto getComplaintById(Long id, String currentUserEmail) {
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + id));

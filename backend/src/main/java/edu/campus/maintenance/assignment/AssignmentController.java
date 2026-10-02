@@ -4,10 +4,16 @@ import edu.campus.maintenance.assignment.dto.AssignComplaintRequest;
 import edu.campus.maintenance.assignment.dto.AssignmentDto;
 import edu.campus.maintenance.assignment.dto.TechnicianSuggestionDto;
 import edu.campus.maintenance.common.dto.ApiResponse;
+import edu.campus.maintenance.common.dto.PageResponse;
+import edu.campus.maintenance.complaint.ComplaintService;
+import edu.campus.maintenance.complaint.dto.ComplaintDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +29,7 @@ import java.util.List;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
+    private final ComplaintService complaintService;
 
     @PostMapping("/complaints/{id}/assign")
     @PreAuthorize("hasRole('ADMIN')")
@@ -33,6 +40,15 @@ public class AssignmentController {
             @AuthenticationPrincipal UserDetails userDetails) {
         AssignmentDto result = assignmentService.assignComplaint(id, request, userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.ok("Complaint assigned successfully", result));
+    }
+
+    @GetMapping("/technicians/assigned")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'ADMIN')")
+    @Operation(summary = "Get active assigned complaints for logged-in technician")
+    public ResponseEntity<ApiResponse<PageResponse<ComplaintDto>>> getAssignedComplaints(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.ok(complaintService.getAssignedComplaintsForTechnician(userDetails.getUsername(), pageable)));
     }
 
     @GetMapping("/technicians/me/assignments")

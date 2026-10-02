@@ -17,6 +17,9 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long>, Jpa
 
     Page<Complaint> findByReporterOrderByCreatedAtDesc(User reporter, Pageable pageable);
 
+    @Query("SELECT c FROM Complaint c WHERE c.id IN (SELECT a.complaint.id FROM Assignment a WHERE a.technician = :technician AND a.active = true)")
+    Page<Complaint> findAssignedToTechnician(@Param("technician") User technician, Pageable pageable);
+
     @Query("SELECT c FROM Complaint c WHERE c.status != 'RESOLVED'")
     List<Complaint> findUnresolvedComplaints();
 

@@ -88,9 +88,10 @@ export const Register = ({ onOpenTerms, onOpenPrivacy }) => {
               type="password"
               name="password"
               required
+              minLength={8}
               value={formData.password}
               onChange={handleChange}
-              placeholder="Min 6 characters"
+              placeholder="Min 8 characters"
               className="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500"
             />
           </div>

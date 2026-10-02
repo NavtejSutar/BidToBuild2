@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/complaints")
@@ -37,7 +38,7 @@ public class ComplaintController {
     private final ComplaintEventService eventService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'STAFF', 'ADMIN')")
     @Operation(summary = "Submit a new complaint with optional image proof")
     public ResponseEntity<ApiResponse<ComplaintDto>> createComplaint(
             @Valid @ModelAttribute CreateComplaintRequest request,
@@ -48,8 +49,8 @@ public class ComplaintController {
                 .body(ApiResponse.ok("Complaint submitted successfully", response));
     }
 
-    @GetMapping("/mine")
-    @PreAuthorize("hasRole('USER')")
+    @GetMapping({"/mine", "/my"})
+    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'STAFF', 'ADMIN')")
     @Operation(summary = "Get paginated complaints submitted by logged-in user")
     public ResponseEntity<ApiResponse<PageResponse<ComplaintDto>>> getMyComplaints(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -57,8 +58,17 @@ public class ComplaintController {
         return ResponseEntity.ok(ApiResponse.ok(complaintService.getMyComplaints(userDetails.getUsername(), pageable)));
     }
 
+    @GetMapping("/queue")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    @Operation(summary = "Get open complaints sorted by dynamic priority score")
+    public ResponseEntity<ApiResponse<PageResponse<ComplaintDto>>> getPriorityQueue(
+            @PageableDefault(size = 50, sort = "priorityScore", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.ok(
+                complaintService.searchComplaints(null, null, null, null, null, null, null, null, pageable)));
+    }
+
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'TECHNICIAN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'STAFF', 'TECHNICIAN', 'ADMIN')")
     @Operation(summary = "Get complaint details by ID")
     public ResponseEntity<ApiResponse<ComplaintDto>> getComplaintById(
             @PathVariable Long id,
@@ -67,7 +77,7 @@ public class ComplaintController {
     }
 
     @GetMapping("/{id}/recurrence-history")
-    @PreAuthorize("hasAnyRole('USER', 'TECHNICIAN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'STAFF', 'TECHNICIAN', 'ADMIN')")
     @Operation(summary = "Get recurrence history of earlier complaints in same location and category")
     public ResponseEntity<ApiResponse<List<ComplaintDto>>> getRecurrenceHistory(
             @PathVariable Long id,
@@ -76,7 +86,7 @@ public class ComplaintController {
     }
 
     @GetMapping("/{id}/history")
-    @PreAuthorize("hasAnyRole('USER', 'TECHNICIAN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'STUDENT', 'STAFF', 'TECHNICIAN', 'ADMIN')")
     @Operation(summary = "Get audit history for a complaint")
     public ResponseEntity<ApiResponse<List<ComplaintHistoryDto>>> getComplaintHistory(
             @PathVariable Long id,
@@ -99,6 +109,34 @@ public class ComplaintController {
             @PageableDefault(size = 20, sort = "priorityScore", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(
                 complaintService.searchComplaints(status, category, level, locationId, recurring, search, fromDate, toDate, pageable)));
+    }
+
+    @PostMapping("/{id}/start-progress")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'ADMIN')")
+    @Operation(summary = "Start progress on complaint")
+    public ResponseEntity<ApiResponse<ComplaintDto>> startProgress(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        UpdateComplaintStatusRequest req = new UpdateComplaintStatusRequest();
+        req.setStatus(ComplaintStatus.IN_PROGRESS);
+        req.setNote("Technician started work on complaint");
+        ComplaintDto result = complaintService.updateComplaintStatus(id, req, null, userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.ok("Progress started", result));
+    }
+
+    @PostMapping("/{id}/resolve")
+    @PreAuthorize("hasAnyRole('TECHNICIAN', 'ADMIN')")
+    @Operation(summary = "Resolve complaint")
+    public ResponseEntity<ApiResponse<ComplaintDto>> resolveComplaint(
+            @PathVariable Long id,
+            @RequestBody(required = false) Map<String, String> body,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        UpdateComplaintStatusRequest req = new UpdateComplaintStatusRequest();
+        req.setStatus(ComplaintStatus.RESOLVED);
+        String note = (body != null && body.containsKey("note")) ? body.get("note") : "Complaint resolved";
+        req.setNote(note);
+        ComplaintDto result = complaintService.updateComplaintStatus(id, req, null, userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.ok("Complaint marked as resolved", result));
     }
 
     @PatchMapping(value = "/{id}/status", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
