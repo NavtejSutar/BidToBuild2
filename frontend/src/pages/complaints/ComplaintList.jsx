@@ -46,10 +46,9 @@ export const ComplaintList = () => {
           </div>
           <Link
             to="/complaints/new"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold uppercase tracking-wider rounded-full transition-colors self-start sm:self-auto shadow-sm"
+            className="inline-flex items-center px-5 py-2.5 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold uppercase tracking-wider rounded-full transition-colors self-start sm:self-auto shadow-sm"
           >
-            <PlusCircle className="w-4 h-4" />
-            Report Fault ↗
+            Report Complaint
           </Link>
         </div>
 
@@ -145,10 +144,9 @@ export const ComplaintList = () => {
                     <td className="py-3 px-4 text-right whitespace-nowrap">
                       <Link
                         to={`/complaints/${c.id}`}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-neutral-950 hover:bg-neutral-850 text-white text-[11px] font-semibold uppercase tracking-wider rounded-full transition-colors"
+                        className="inline-flex items-center px-3 py-1 bg-neutral-950 hover:bg-neutral-850 text-white text-[11px] font-semibold uppercase tracking-wider rounded-full transition-colors"
                       >
-                        <Eye className="w-3 h-3" />
-                        View ↗
+                        View
                       </Link>
                     </td>
                   </tr>

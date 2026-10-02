@@ -107,10 +107,9 @@ export const Navbar = ({ onOpenTerms, onOpenPrivacy }) => {
 
                 <Link
                   to="/complaints/new"
-                  className="px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-neutral-950 hover:bg-neutral-800 text-white transition-colors flex items-center gap-1 shadow-sm"
+                  className="px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-neutral-950 hover:bg-neutral-800 text-white transition-colors shadow-sm"
                 >
-                  <PlusCircle className="w-3.5 h-3.5" />
-                  Report Fault
+                  Report Complaint
                 </Link>
               </div>
             )}

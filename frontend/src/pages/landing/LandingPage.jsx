@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -282,73 +282,6 @@ export const LandingPage = () => {
               </g>
             </svg>
           </div>
-        </div>
-
-        {/* Bottom Strip: 4 Modular Stat Blocks Divided by 1px Black Lines */}
-        <div className="border-t border-neutral-900 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 divide-y sm:divide-y-0 sm:divide-x divide-neutral-900 text-neutral-900 bg-white">
-          
-          {/* Stat 1: Avatars + 3.4k+ resolved */}
-          <div className="lg:col-span-4 p-4 sm:p-5 flex items-center gap-4">
-            <div className="flex -space-x-2.5 overflow-hidden flex-shrink-0">
-              <img
-                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=faces"
-                alt="Student"
-              />
-              <img
-                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=faces"
-                alt="Staff"
-              />
-              <img
-                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=faces"
-                alt="Tech"
-              />
-              <img
-                className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
-                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=faces"
-                alt="Admin"
-              />
-            </div>
-            <div>
-              <div className="text-base sm:text-lg font-bold tracking-tight text-neutral-950 leading-none">
-                3.4k+
-              </div>
-              <div className="text-[11px] text-neutral-500 mt-1 leading-tight">
-                campus complaints resolved
-              </div>
-            </div>
-          </div>
-
-          {/* Stat 2: 120 campus facilities */}
-          <div className="lg:col-span-2 p-4 sm:p-5">
-            <div className="text-base sm:text-lg font-bold tracking-tight text-neutral-950 leading-none">
-              120
-            </div>
-            <div className="text-[11px] text-neutral-500 mt-1 leading-tight">
-              facilities & labs active
-            </div>
-          </div>
-
-          {/* Stat 3: 99.4% SLA */}
-          <div className="lg:col-span-2 p-4 sm:p-5">
-            <div className="text-base sm:text-lg font-bold tracking-tight text-neutral-950 leading-none">
-              99.4%
-            </div>
-            <div className="text-[11px] text-neutral-500 mt-1 leading-tight">
-              SLA resolution rate
-            </div>
-          </div>
-
-          {/* Stat 4 (under right graphic): Campus Department Badges */}
-          <div className="lg:col-span-4 p-4 sm:p-5 flex items-center justify-between sm:justify-around text-neutral-800 text-xs font-semibold tracking-wider font-mono uppercase">
-            <span>Engineering</span>
-            <span>Sciences</span>
-            <span>Hostels</span>
-            <span>Library</span>
-          </div>
-
         </div>
 
       </div>

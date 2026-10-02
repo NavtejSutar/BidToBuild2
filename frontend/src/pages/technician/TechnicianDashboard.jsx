@@ -187,7 +187,7 @@ export const TechnicianDashboard = () => {
                           to={`/complaints/${t.id}`}
                           className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[11px] font-semibold uppercase tracking-wider rounded-full transition-colors"
                         >
-                          View ↗
+                          View
                         </Link>
                         {t.status === 'ASSIGNED' && (
                           <button
