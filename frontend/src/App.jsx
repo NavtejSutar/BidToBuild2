@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { TermsModal, PrivacyModal } from './components/LegalModals';
+import { LandingPage } from './pages/landing/LandingPage';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { ComplaintList } from './pages/complaints/ComplaintList';
@@ -27,16 +28,22 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 export const App = () => {
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const location = useLocation();
+
+  const isLanding = location.pathname === '/';
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      <Navbar
-        onOpenTerms={() => setIsTermsOpen(true)}
-        onOpenPrivacy={() => setIsPrivacyOpen(true)}
-      />
+    <div className={`min-h-screen flex flex-col font-sans ${isLanding ? 'bg-[#abb5ad]' : 'bg-slate-950 text-slate-100'}`}>
+      {!isLanding && (
+        <Navbar
+          onOpenTerms={() => setIsTermsOpen(true)}
+          onOpenPrivacy={() => setIsPrivacyOpen(true)}
+        />
+      )}
 
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col">
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route
             path="/login"
             element={
@@ -127,26 +134,27 @@ export const App = () => {
           />
 
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/complaints" replace />} />
-          <Route path="*" element={<Navigate to="/complaints" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div>CampusOps Smart Maintenance & Predictive Complaint Management System</div>
-          <div className="flex items-center gap-4">
-            <button onClick={() => setIsTermsOpen(true)} className="hover:text-slate-300">
-              Terms & Conditions
-            </button>
-            <span>•</span>
-            <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-slate-300">
-              Privacy Policy
-            </button>
+      {!isLanding && (
+        <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>CampusOps Smart Maintenance & Predictive Complaint Management System</div>
+            <div className="flex items-center gap-4">
+              <button onClick={() => setIsTermsOpen(true)} className="hover:text-slate-300">
+                Terms & Conditions
+              </button>
+              <span>•</span>
+              <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-slate-300">
+                Privacy Policy
+              </button>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
       {/* Legal Modals */}
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
