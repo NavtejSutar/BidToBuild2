@@ -20,4 +20,36 @@ public class TechnicianWorkloadDto {
     private long inProgressCount;
     private Map<String, Long> priorityDistribution;
     private List<ComplaintDto> activeComplaints;
+
+    public Long getTechnicianId() {
+        return technician != null ? technician.getId() : null;
+    }
+
+    public String getTechnicianName() {
+        return technician != null ? technician.getName() : null;
+    }
+
+    public String getEmail() {
+        return technician != null ? technician.getEmail() : null;
+    }
+
+    public String getDepartment() {
+        return technician != null ? technician.getDepartment() : null;
+    }
+
+    public long getTotalOpenTasks() {
+        return totalActiveTasks;
+    }
+
+    public long getAssignedTasks() {
+        return assignedCount;
+    }
+
+    public long getInProgressTasks() {
+        return inProgressCount;
+    }
+
+    public long getCriticalTasks() {
+        return priorityDistribution != null ? priorityDistribution.getOrDefault("CRITICAL", 0L) : 0L;
+    }
 }
