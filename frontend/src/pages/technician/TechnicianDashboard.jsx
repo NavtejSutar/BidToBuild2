@@ -64,153 +64,166 @@ export const TechnicianDashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Technician Work Queue</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Active maintenance tasks assigned to {user?.fullName || user?.email}
+      <div className="bg-white border border-neutral-900 rounded-sm p-6 sm:p-8 shadow-xl text-neutral-900 space-y-6">
+        <div className="pb-6 border-b border-neutral-900">
+          <div className="font-mono text-xs uppercase tracking-wider text-neutral-500 mb-1">
+            // Field Dispatch Terminal
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-normal tracking-tight text-neutral-950">
+            Technician Work Queue
+          </h1>
+          <p className="text-xs text-neutral-500 mt-1">
+            Active maintenance tasks assigned to <span className="font-semibold text-neutral-900">{user?.fullName || user?.email}</span>
           </p>
         </div>
-      </div>
 
-      {/* Metrics Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-md p-4">
-          <div className="text-xs font-semibold text-slate-400 uppercase">Assigned Tasks</div>
-          <div className="text-2xl font-bold text-sky-400 mt-1">{assignedCount}</div>
-          <div className="text-[11px] text-slate-500 mt-0.5">Ready to be started</div>
+        {/* Metrics Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="border border-neutral-900 rounded-sm p-4 bg-neutral-50/50">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-500">Assigned Tasks</div>
+            <div className="text-2xl sm:text-3xl font-normal text-neutral-950 mt-1">{assignedCount}</div>
+            <div className="text-[10px] text-neutral-500 mt-1 font-mono">Ready to be started</div>
+          </div>
+          <div className="border border-neutral-900 rounded-sm p-4 bg-neutral-50/50">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-500">In Progress</div>
+            <div className="text-2xl sm:text-3xl font-normal text-[#5a98a8] mt-1">{inProgressCount}</div>
+            <div className="text-[10px] text-neutral-500 mt-1 font-mono">Work currently ongoing</div>
+          </div>
+          <div className="border border-neutral-900 rounded-sm p-4 bg-rose-50/60 border-rose-900">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-rose-800 font-semibold">Critical Priority</div>
+            <div className="text-2xl sm:text-3xl font-normal text-[#ea4335] mt-1">{criticalCount}</div>
+            <div className="text-[10px] text-rose-700 mt-1 font-mono">Requires immediate attention</div>
+          </div>
         </div>
-        <div className="bg-slate-900 border border-slate-800 rounded-md p-4">
-          <div className="text-xs font-semibold text-slate-400 uppercase">In Progress</div>
-          <div className="text-2xl font-bold text-indigo-400 mt-1">{inProgressCount}</div>
-          <div className="text-[11px] text-slate-500 mt-0.5">Work currently ongoing</div>
-        </div>
-        <div className="bg-slate-900 border border-slate-800 rounded-md p-4">
-          <div className="text-xs font-semibold text-slate-400 uppercase">Critical Priority</div>
-          <div className="text-2xl font-bold text-rose-400 mt-1">{criticalCount}</div>
-          <div className="text-[11px] text-slate-500 mt-0.5">Requires immediate attention</div>
-        </div>
-      </div>
 
-      {/* Filter Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-md p-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <span className="text-xs font-medium text-slate-300">Filter Queue:</span>
-          <button
-            onClick={() => setFilterStatus('')}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium ${
-              filterStatus === '' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            All Active
-          </button>
-          <button
-            onClick={() => setFilterStatus('ASSIGNED')}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium ${
-              filterStatus === 'ASSIGNED' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            Assigned
-          </button>
-          <button
-            onClick={() => setFilterStatus('IN_PROGRESS')}
-            className={`px-2.5 py-1 rounded-md text-xs font-medium ${
-              filterStatus === 'IN_PROGRESS' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            In Progress
-          </button>
+        {/* Filter Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-neutral-500" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-700">Filter Queue:</span>
+            <button
+              onClick={() => setFilterStatus('')}
+              className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
+                filterStatus === ''
+                  ? 'bg-neutral-950 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+            >
+              All Active
+            </button>
+            <button
+              onClick={() => setFilterStatus('ASSIGNED')}
+              className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
+                filterStatus === 'ASSIGNED'
+                  ? 'bg-neutral-950 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+            >
+              Assigned
+            </button>
+            <button
+              onClick={() => setFilterStatus('IN_PROGRESS')}
+              className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
+                filterStatus === 'IN_PROGRESS'
+                  ? 'bg-neutral-950 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+            >
+              In Progress
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Tasks Table */}
-      {isLoading ? (
-        <div className="p-12 text-center text-slate-400 text-sm">Loading task queue...</div>
-      ) : filteredTasks.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-md p-12 text-center">
-          <Wrench className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-sm font-medium text-slate-300">No assigned tasks right now</h3>
-          <p className="text-xs text-slate-500 mt-1">Great job! All assigned repairs are up to date.</p>
-        </div>
-      ) : (
-        <div className="bg-slate-900 border border-slate-800 rounded-md overflow-hidden">
-          <table className="min-w-full divide-y divide-slate-800 text-left text-xs">
-            <thead className="bg-slate-800/60 text-slate-400 font-semibold uppercase tracking-wider">
-              <tr>
-                <th className="py-3 px-4">Task ID</th>
-                <th className="py-3 px-4">Title & Description</th>
-                <th className="py-3 px-4">Location</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Priority</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
-              {filteredTasks.map((t) => (
-                <tr key={t.id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-4 font-mono text-slate-400">#{t.id}</td>
-                  <td className="py-3 px-4 max-w-sm">
-                    <div className="flex items-center gap-2">
-                      <Link to={`/complaints/${t.id}`} className="font-medium text-white hover:text-sky-400">
-                        {t.title}
-                      </Link>
-                      <RecurrenceBadge isRecurring={t.recurring} recurrenceIndex={t.recurrenceIndex} />
-                    </div>
-                    <p className="text-slate-400 text-[11px] truncate mt-0.5">{t.description}</p>
-                  </td>
-                  <td className="py-3 px-4 text-slate-300">{t.locationName || 'N/A'}</td>
-                  <td className="py-3 px-4">
-                    <StatusBadge status={t.status} />
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="space-y-1">
-                      <PriorityBadge level={t.priorityLevel} />
-                      <PriorityScoreChips score={t.priorityScore} breakdownJson={t.priorityBreakdownJson} />
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-2">
-                      <Link
-                        to={`/complaints/${t.id}`}
-                        className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-md"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </Link>
-                      {t.status === 'ASSIGNED' && (
-                        <button
-                          onClick={() => handleStartWork(t.id)}
-                          disabled={actionLoadingId === t.id}
-                          className="px-2.5 py-1 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white text-xs font-medium rounded-md flex items-center gap-1"
-                        >
-                          <PlayCircle className="w-3.5 h-3.5" />
-                          Start
-                        </button>
-                      )}
-                      {t.status === 'IN_PROGRESS' && (
-                        <button
-                          onClick={() => openResolve(t)}
-                          className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-md flex items-center gap-1"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          Resolve
-                        </button>
-                      )}
-                    </div>
-                  </td>
+        {/* Tasks Table */}
+        {isLoading ? (
+          <div className="p-16 text-center text-neutral-500 font-mono text-xs">
+            // Loading task queue stream...
+          </div>
+        ) : filteredTasks.length === 0 ? (
+          <div className="border border-dashed border-neutral-300 rounded-sm p-12 text-center">
+            <Wrench className="w-8 h-8 text-neutral-400 mx-auto mb-2" />
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-950">No assigned tasks right now</h3>
+            <p className="text-xs text-neutral-500 mt-1">Great job! All assigned repairs are up to date.</p>
+          </div>
+        ) : (
+          <div className="border border-neutral-900 rounded-sm overflow-hidden">
+            <table className="min-w-full divide-y divide-neutral-200 text-left text-xs">
+              <thead className="bg-neutral-50 text-neutral-700 font-mono uppercase tracking-wider border-b border-neutral-900">
+                <tr>
+                  <th className="py-3 px-4 font-semibold">Task ID</th>
+                  <th className="py-3 px-4 font-semibold">Title & Description</th>
+                  <th className="py-3 px-4 font-semibold">Location</th>
+                  <th className="py-3 px-4 font-semibold">Status</th>
+                  <th className="py-3 px-4 font-semibold">Priority</th>
+                  <th className="py-3 px-4 font-semibold text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody className="divide-y divide-neutral-200 text-neutral-800 bg-white">
+                {filteredTasks.map((t) => (
+                  <tr key={t.id} className="hover:bg-neutral-50/70 transition-colors">
+                    <td className="py-3 px-4 font-mono font-medium text-neutral-500">#{t.id}</td>
+                    <td className="py-3 px-4 max-w-sm">
+                      <div className="flex items-center gap-2">
+                        <Link to={`/complaints/${t.id}`} className="font-semibold text-neutral-950 hover:underline underline-offset-2">
+                          {t.title}
+                        </Link>
+                        <RecurrenceBadge isRecurring={t.recurring} recurrenceIndex={t.recurrenceIndex} />
+                      </div>
+                      <p className="text-neutral-500 text-[11px] truncate mt-0.5">{t.description}</p>
+                    </td>
+                    <td className="py-3 px-4 text-neutral-700">{t.locationName || 'N/A'}</td>
+                    <td className="py-3 px-4">
+                      <StatusBadge status={t.status} />
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="space-y-1">
+                        <PriorityBadge level={t.priorityLevel} />
+                        <PriorityScoreChips score={t.priorityScore} breakdownJson={t.priorityBreakdownJson} />
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          to={`/complaints/${t.id}`}
+                          className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-[11px] font-semibold uppercase tracking-wider rounded-full transition-colors"
+                        >
+                          View ↗
+                        </Link>
+                        {t.status === 'ASSIGNED' && (
+                          <button
+                            onClick={() => handleStartWork(t.id)}
+                            disabled={actionLoadingId === t.id}
+                            className="px-3.5 py-1 bg-neutral-950 hover:bg-neutral-800 disabled:opacity-50 text-white text-[11px] font-semibold uppercase tracking-wider rounded-full shadow-sm flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <PlayCircle className="w-3 h-3" />
+                            Start ↗
+                          </button>
+                        )}
+                        {t.status === 'IN_PROGRESS' && (
+                          <button
+                            onClick={() => openResolve(t)}
+                            className="px-3.5 py-1 bg-[#5a98a8] hover:bg-[#487a87] text-white text-[11px] font-semibold uppercase tracking-wider rounded-full shadow-sm flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <CheckCircle2 className="w-3 h-3" />
+                            Resolve ↗
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-      <ResolveModal
-        complaint={selectedComplaint}
-        isOpen={isResolveModalOpen}
-        onClose={() => setIsResolveModalOpen(false)}
-        onResolved={refetch}
-      />
+        <ResolveModal
+          complaint={selectedComplaint}
+          isOpen={isResolveModalOpen}
+          onClose={() => setIsResolveModalOpen(false)}
+          onResolved={refetch}
+        />
+      </div>
     </div>
   );
 };

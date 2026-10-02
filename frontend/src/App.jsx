@@ -33,7 +33,7 @@ export const App = () => {
   const isLanding = location.pathname === '/';
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans ${isLanding ? 'bg-[#abb5ad]' : 'bg-slate-950 text-slate-100'}`}>
+    <div className="min-h-screen flex flex-col font-sans bg-[#abb5ad] text-neutral-900">
       {!isLanding && (
         <Navbar
           onOpenTerms={() => setIsTermsOpen(true)}
@@ -140,15 +140,15 @@ export const App = () => {
 
       {/* Footer */}
       {!isLanding && (
-        <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <footer className="border-t border-neutral-900 bg-white py-6 text-center text-xs text-neutral-500 font-mono">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div>CampusOps Smart Maintenance & Predictive Complaint Management System</div>
-            <div className="flex items-center gap-4">
-              <button onClick={() => setIsTermsOpen(true)} className="hover:text-slate-300">
+            <div>// CampusOps Smart Maintenance & Predictive Complaint Management</div>
+            <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-neutral-700">
+              <button onClick={() => setIsTermsOpen(true)} className="hover:text-neutral-950 cursor-pointer">
                 Terms & Conditions
               </button>
               <span>•</span>
-              <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-slate-300">
+              <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-neutral-950 cursor-pointer">
                 Privacy Policy
               </button>
             </div>

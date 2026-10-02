@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  Wrench,
   LayoutDashboard,
   ListTodo,
   PlusCircle,
   Users,
   MapPin,
   LogOut,
-  Shield,
-  FileText
+  FileText,
+  ArrowUpRight
 } from 'lucide-react';
 
 export const Navbar = ({ onOpenTerms, onOpenPrivacy }) => {
@@ -20,78 +19,64 @@ export const Navbar = ({ onOpenTerms, onOpenPrivacy }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+    <nav className="bg-white border-b border-neutral-900 sticky top-0 z-40 text-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2.5 text-white font-semibold text-lg tracking-tight">
-              <div className="w-8 h-8 rounded-md bg-sky-600 flex items-center justify-center text-white">
-                <Wrench className="w-4 h-4" />
-              </div>
-              <span>CampusOps</span>
+          <div className="flex items-center gap-6 lg:gap-8">
+            <Link to="/" className="flex items-center gap-2 font-mono text-sm tracking-tight font-semibold hover:opacity-80 transition-opacity">
+              <span className="text-neutral-400 font-normal">//</span>
+              <span className="text-neutral-950 tracking-wide uppercase">CampusOps</span>
             </Link>
 
             {user && (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-1.5 lg:gap-2">
                 {user.role === 'ADMIN' && (
                   <>
                     <Link
                       to="/admin"
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ${
                         isActive('/admin')
-                          ? 'bg-slate-800 text-sky-400'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                          ? 'bg-neutral-950 text-white'
+                          : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
                       }`}
                     >
-                      <span className="flex items-center gap-1.5">
-                        <LayoutDashboard className="w-4 h-4" />
-                        Dashboard
-                      </span>
+                      Dashboard
                     </Link>
                     <Link
                       to="/admin/priority-queue"
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ${
                         isActive('/admin/priority-queue')
-                          ? 'bg-slate-800 text-sky-400'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                          ? 'bg-neutral-950 text-white'
+                          : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
                       }`}
                     >
-                      <span className="flex items-center gap-1.5">
-                        <ListTodo className="w-4 h-4" />
-                        Priority Queue
-                      </span>
+                      Priority Queue
                     </Link>
                     <Link
                       to="/admin/workload"
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ${
                         isActive('/admin/workload')
-                          ? 'bg-slate-800 text-sky-400'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                          ? 'bg-neutral-950 text-white'
+                          : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
                       }`}
                     >
-                      <span className="flex items-center gap-1.5">
-                        <Users className="w-4 h-4" />
-                        Technicians
-                      </span>
+                      Workload
                     </Link>
                     <Link
                       to="/admin/locations"
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ${
                         isActive('/admin/locations')
-                          ? 'bg-slate-800 text-sky-400'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                          ? 'bg-neutral-950 text-white'
+                          : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
                       }`}
                     >
-                      <span className="flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4" />
-                        Locations
-                      </span>
+                      Facilities
                     </Link>
                   </>
                 )}
@@ -99,60 +84,51 @@ export const Navbar = ({ onOpenTerms, onOpenPrivacy }) => {
                 {user.role === 'TECHNICIAN' && (
                   <Link
                     to="/technician"
-                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ${
                       isActive('/technician')
-                        ? 'bg-slate-800 text-sky-400'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                        ? 'bg-neutral-950 text-white'
+                        : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
                     }`}
                   >
-                    <span className="flex items-center gap-1.5">
-                      <ListTodo className="w-4 h-4" />
-                      Assigned Queue
-                    </span>
+                    Assigned Tasks
                   </Link>
                 )}
 
                 <Link
                   to="/complaints"
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ${
                     isActive('/complaints')
-                      ? 'bg-slate-800 text-sky-400'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-neutral-950 text-white'
+                      : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100'
                   }`}
                 >
-                  <span className="flex items-center gap-1.5">
-                    <FileText className="w-4 h-4" />
-                    My Complaints
-                  </span>
+                  My Complaints
                 </Link>
 
                 <Link
                   to="/complaints/new"
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium bg-sky-600 hover:bg-sky-500 text-white transition-colors`}
+                  className="px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-neutral-950 hover:bg-neutral-800 text-white transition-colors flex items-center gap-1 shadow-sm"
                 >
-                  <span className="flex items-center gap-1.5">
-                    <PlusCircle className="w-4 h-4" />
-                    Report Fault
-                  </span>
+                  <PlusCircle className="w-3.5 h-3.5" />
+                  Report Fault
                 </Link>
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {user ? (
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <div className="text-sm font-medium text-slate-200">{user.fullName || user.email}</div>
-                  <div className="text-xs text-slate-400 flex items-center justify-end gap-1">
-                    <Shield className="w-3 h-3 text-sky-400" />
+                  <div className="text-xs font-semibold text-neutral-900">{user.fullName || user.email}</div>
+                  <div className="text-[10px] font-mono text-neutral-500 uppercase tracking-wider">
                     {user.role}
                   </div>
                 </div>
                 <button
                   onClick={handleLogout}
                   title="Sign Out"
-                  className="p-2 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+                  className="p-1.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -161,13 +137,13 @@ export const Navbar = ({ onOpenTerms, onOpenPrivacy }) => {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-3 py-1.5 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800"
+                  className="px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 py-1.5 rounded-md text-sm font-medium bg-sky-600 hover:bg-sky-500 text-white"
+                  className="px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-neutral-950 hover:bg-neutral-800 text-white transition-colors"
                 >
                   Register
                 </Link>

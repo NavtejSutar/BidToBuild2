@@ -7,9 +7,9 @@ export const RecurrenceBadge = ({ isRecurring, recurrenceIndex }) => {
   return (
     <span
       title={`Repeat occurrences in past 30 days: ${recurrenceIndex}`}
-      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-950/70 border border-amber-700 text-amber-300 text-xs font-medium"
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-[11px] font-mono font-medium"
     >
-      <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+      <AlertTriangle className="w-3 h-3 text-amber-600" />
       Recurring ({recurrenceIndex})
     </span>
   );
